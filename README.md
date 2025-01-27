@@ -121,3 +121,56 @@ Set proper permissions for Laravel:
 chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 ```
+
+### 4. Web Server Configuration
+
+#### Apache Configuration
+Create a virtual host configuration (`/etc/apache2/sites-available/rccc-attendance.conf`):
+```apache
+<VirtualHost *:80>
+    ServerName your-domain.com
+    DocumentRoot /path/to/rccc-attendence-records/public
+    
+    <Directory /path/to/rccc-attendence-records/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    ErrorLog ${APACHE_LOG_DIR}/rccc-attendance-error.log
+    CustomLog ${APACHE_LOG_DIR}/rccc-attendance-access.log combined
+</VirtualHost>
+```
+
+Enable the site:
+```bash
+a2ensite rccc-attendance.conf
+systemctl restart apache2
+```
+
+#### Nginx Configuration
+Create a server block (`/etc/nginx/sites-available/rccc-attendance`):
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/rccc-attendence-records/public;
+    
+    index index.php;
+    
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
+Enable the site:
+```bash
+ln -s /etc/nginx/sites-available/rccc-attendance /etc/nginx/sites-enabled/
+systemctl restart nginx
+```
