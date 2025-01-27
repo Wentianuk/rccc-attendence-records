@@ -174,3 +174,53 @@ Enable the site:
 ln -s /etc/nginx/sites-available/rccc-attendance /etc/nginx/sites-enabled/
 systemctl restart nginx
 ```
+
+### 5. SSL Configuration (Recommended)
+
+Install SSL certificate using Certbot:
+
+For Apache:
+```bash
+certbot --apache -d your-domain.com
+```
+
+For Nginx:
+```bash
+certbot --nginx -d your-domain.com
+```
+
+### 6. CompreFace Setup
+
+1. Install and configure CompreFace on your server
+2. Update `.env` with CompreFace settings:
+```
+COMPREFACE_API_KEY=your_api_key
+COMPREFACE_API_URL=your_api_url
+```
+
+## Usage
+
+1. Access the system through your web browser
+2. Start the face recognition system using the "Start Recognition" button
+3. Register new members using the registration form
+4. View attendance records and reports through the management interface
+
+## Troubleshooting
+
+1. If you encounter permission issues:
+   - Check storage and cache directory permissions
+   - Ensure web server user has proper access
+
+2. If face recognition doesn't work:
+   - Verify CompreFace API is accessible
+   - Check SSL certificate for camera access
+   - Confirm browser permissions for camera
+
+3. For database issues:
+   - Verify database credentials
+   - Check database connection settings
+   - Ensure migrations are up to date
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
